@@ -5,7 +5,43 @@
 
 
 	if(isset($_POST['add'])){
-		$firstname = $_POST['firstname'];
+		$firstname = $_POST['firstname'];include 'includes/session.php';
+		define('EMAIL', 'pspk2425.gabbar@gmail.com');
+		define('PASS', '');
+		
+		// Load SMTP credentials from environment variables
+		$smtp_host = getenv('SMTP_HOST');
+		$smtp_port = getenv('SMTP_PORT');
+		$smtp_username = getenv('SMTP_USERNAME');
+		$smtp_password = getenv('SMTP_PASSWORD');
+		
+		if (isset($_POST['add'])) {
+			// Rest of your code...
+		
+			$mail = new PHPMailer;
+		
+			$mail->isSMTP();
+			$mail->Host = $smtp_host;
+			$mail->Port = $smtp_port;
+			$mail->SMTPAuth = true;
+			$mail->Username = $smtp_username;
+			$mail->Password = $smtp_password;
+			$mail->SMTPSecure = 'tls';
+		
+			// Rest of your code...
+		
+			if (!$mail->send()) {
+				echo 'Message could not be sent.';
+				echo 'Mailer Error: ' . $mail->ErrorInfo;
+			} else {
+				echo 'Message has been sent';
+			}  
+		} else {
+			$_SESSION['error'] = 'Fill up add form first';
+		}
+		
+		header('location: voters.php');
+		
 		$hashed_firstname = password_hash($_POST['firstname'],PASSWORD_DEFAULT);
 		$lastname = $_POST['lastname'];
 		$hashed_lastname = password_hash($_POST['lastname'],PASSWORD_DEFAULT);
